@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Document and Notes Assistant</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <h1>📚 Document and Notes Assistant</h1>
+            <p>Upload your PDF documents and ask questions using AI.</p>
+        </header>
+
+        <!-- Display messages -->
+        {% if message %}
+        <div class="message">
+            {{ message }}
+        </div>
+        {% endif %}
+
+        <!-- PDF Upload Section -->
+        <section class="card">
+            <h2>📄 Upload PDF Documents</h2>
+
+            <p>Select one or more PDF files to get started.</p>
+
+            <form action="{{ url_for('home') }}"
+                  method="POST"
+                  enctype="multipart/form-data">
+
+                <input type="hidden"
+                       name="action"
+                       value="upload">
+
+                <label for="pdfs">Choose PDF files:</label>
+
+                <input
+                    type="file"
+                    id="pdfs"
+                    name="pdfs"
+                    accept=".pdf,application/pdf"
+                    multiple
+                    required
+                >
+
+                <button type="submit">
+                    Upload and Process PDFs
+                </button>
+            </form>
+
+            <!-- Uploaded document list -->
+            {% if uploaded_pdfs %}
+            <div class="uploaded-documents">
+                <h3>Uploaded Documents</h3>
+
+                <ul>
+                    {% for pdf in uploaded_pdfs %}
+                    <li>{{ pdf.split('/')[-1] }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Question Section -->
+        <section class="card">
+            <h2>💬 Ask Questions</h2>
+
+            <p>Ask anything about the documents you uploaded.</p>
+
+            <form action="{{ url_for('home') }}"
+                  method="POST">
+
+                <input type="hidden"
+                       name="action"
+                       value="ask">
+
+                <label for="question">Your question:</label>
+
+                <input
+                    type="text"
+                    id="question"
+                    name="question"
+                    placeholder="e.g. Summarize this document..."
+                    value="{{ question }}"
+                    required
+                >
+
+                <button type="submit">
+                    Get Answer
+                </button>
+            </form>
+
+            <!-- Display AI answer -->
+            {% if answer %}
+            <div class="answer">
+                <h3>🤖 Answer</h3>
+                <p>{{ answer }}</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <footer>
+            <p>Document and Notes Assistant · Powered by RAG and AI</p>
+        </footer>
+
+    </div>
+</body>
+</html>
